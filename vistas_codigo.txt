@@ -1,0 +1,44 @@
+import pandas as pd
+# comienzo importando el archivo proporcionado:
+df = pd.read_csv('/content/drive/MyDrive/Vistas/Book4.csv') # cambiar Book4.csv por el nombre local de carpeta y archivo
+
+#cuento la cantidad de columnas y divido entre 2 para saber cuantos pares de columnas se van a reordenar:
+cantidad_de_columnas_del_archivo = len(df.columns)
+cantidad_columnas_reordenar = cantidad_de_columnas_del_archivo/2
+
+# defino el contador de pares que voy a ir iterando a través de las columnas
+contador_de_pares = 0
+
+# Selecciono las 2 primeras columnas del df
+col_sel = df.iloc[:,[contador_de_pares, contador_de_pares + 1]]
+
+# defino el nombre de la columna, que va a ser la fila '0' de 'col_sel'
+nombre_columna = col_sel.columns[0]
+
+# las ordeno de acuerdo a la columna 0 (en este caso 'set')
+col_sorted = col_sel.sort_values(by=nombre_columna).reset_index(drop=True)
+
+# el df 'resultado' guarda ahora las 2 primeras columnas ordenadas.
+# después, las voy a concatenar con las siguientes:
+
+resultado = col_sorted
+
+# ahora uso while para ordenar el resto de las columnas y a continuación, concatenarlas:
+while contador_de_pares < len(df.columns) - 2:
+
+    # incremento el contador para trabajar con las dos columnas siguientes:
+    contador_de_pares += 2
+
+    # Selecciono las 2 columnas siguientes del df
+    col_sel = df.iloc[:,[contador_de_pares, contador_de_pares + 1]]
+
+    # defino el nombre de la columna, que va a ser la '0' de 'col_sel'
+    nombre_columna = col_sel.columns[0]
+
+    # ordeno el nuevo par
+    col_sorted = col_sel.sort_values(by=nombre_columna).reset_index(drop=True)
+
+    # concateno con el DF 'resultado' que ya había definido antes
+    salida = pd.concat([resultado, col_sorted], axis=1)
+
+salida.to_csv('/content/drive/MyDrive/Vistas/salida0.csv')
